@@ -1,0 +1,2 @@
+module Creaking.Coding.Interview {
+}
