@@ -7,7 +7,26 @@ import java.util.Arrays;
 
 public class Maths {
     public static void main(String[] args) throws IOException {
+         int[] ar = new int[]{1,13,2,31,17};
+        System.out.println(countEmirp(ar,5));
+    }
+    public static int countEmirp(int[] input1,int input2){
+        int count=0;
 
+        for(int i=0;i<input2;i++){
+            if (isPrime(input1[i])){
+                count++;
+            }
+        }
+
+        int[] res = new int[count];
+        int c2=0;
+        for(int i =0;i<count;i++){
+            if (reverseNumber(res[i])){
+                c2++;
+            }
+        }
+        return c2;
     }
     public static boolean armStrong(int n){
         int r=0,sum=0,temp=n;

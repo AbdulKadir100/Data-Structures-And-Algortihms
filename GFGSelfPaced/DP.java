@@ -75,19 +75,21 @@ public class DP {
         }
 
     }
+
     private static int LIS2(int ind, int prev, int[] arr, int n, int[][] dp) {
         if (ind == n) return 0;
         if (dp[ind][prev + 1] != -1) return dp[ind][prev + 1];
 
-        int len =  LIS2(ind + 1, prev, arr, n, dp);//Not Take
+        int len = LIS2(ind + 1, prev, arr, n, dp);//Not Take
         if (prev == -1 || arr[ind] > arr[prev])
             len = Math.max(len, 1 + LIS2(ind + 1, ind, arr, n, dp));//Take
         return dp[ind][prev + 1] = len;
     }
+
     private static int LIS(int ind, int prev, int[] arr, int n) {
         if (ind == n) return 0;
 
-        int len =  LIS(ind + 1, prev, arr, n);//Not Take
+        int len = LIS(ind + 1, prev, arr, n);//Not Take
         if (prev == -1 || arr[ind] > arr[prev])
             len = Math.max(len, 1 + LIS(ind + 1, ind, arr, n));//Take
         return len;
@@ -191,7 +193,7 @@ public class DP {
         Space optimized
         PS: If cap==0,ind and buy can be anything
         If  ind==n,ind and cap can be anything
-         */
+        */
 
         int[][] after = new int[2][3];
         int[][] cur = new int[2][3];
@@ -1491,6 +1493,18 @@ public class DP {
     }
 
     private static int ninjaTraining(int day, int last, int points[][], int[][] dp) {
+        /*
+        Ninja is planing this ‘N’ days-long training schedule.
+        Each day, he can perform any one of these three activities.
+        (Running, Fighting Practice or Learning New Moves).
+        Each activity has some merit points on each day.
+        As Ninja has to improve all his skills, he can’t do the same activity
+        in two consecutive days. Can you help Ninja find out
+        the maximum merit points Ninja can earn?
+        You are given a 2D array of size N*3 ‘POINTS’ with the points corresponding
+        to each day and activity. Your task is to calculate the maximum number of
+        merit points that Ninja can earn.
+         */
         if (day == 0) {
             int maxi = 0;
             for (int task = 0; task < 3; task++) {
@@ -1560,10 +1574,11 @@ public class DP {
         int[] dp = new int[ind];
         dp[0] = 0;
 
-        int neg = 0, pick = 0;
+        int pick = 0;
         for (int i = 1; i < ind; i++) {
             pick = arr[ind];
-            if (i > 1) pick += dp[i - 2];
+            if (i > 1)
+                pick += dp[i - 2];
             int notPick = dp[i - 1];
             dp[i] = Math.max(pick, notPick);
         }
@@ -1599,6 +1614,7 @@ public class DP {
         if (ind == 0) return arr[ind];
         if (ind < 0) return 0;
 
+        //Main Code
         int pick = arr[ind] + maxSumSubsequence(ind - 2, arr);
         int notPick = maxSumSubsequence(ind - 1, arr);
         return Math.max(pick, notPick);

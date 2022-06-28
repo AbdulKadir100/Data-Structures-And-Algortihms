@@ -4,49 +4,91 @@ import java.util.*;
 import java.io.*;
 
 public class MyClass {
+    static int x=10;
+    static String y="10";
 
     public static void main(String[] args) {
+
+
+
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int rev = 0;
-        int temp = n;
-        while (temp != 0) {
-            int ld = temp % 10;
-            rev = rev * 10 + ld;
-            temp = temp / 10;
+        TatkalBooking[] tb = new TatkalBooking[4];
+        for (int i = 0; i < tb.length; i++) {
+            int id = sc.nextInt();sc.nextLine();
+            String name = sc.nextLine();
+            String frstation = sc.nextLine();
+            String tostation = sc.nextLine();
+            int price = sc.nextInt();
+            int avail = sc.nextInt();
+            tb[i] = new TatkalBooking(id,name,frstation,tostation,price,avail);
         }
-        System.out.println(rev);
+        String fromStation = sc.nextLine();
+        String toStation = sc.nextLine();
 
-
-
-//        RRT[] rr = new RRT[4];
-//        for (int i = 0; i < rr.length; i++) {
-//            int no = sc.nextInt();sc.nextLine();
-//            String raised = sc.nextLine();
-//            String assigned = sc.nextLine();
-//            int priority = sc.nextInt();
-//            String project = sc.nextLine();
-//            rr[i] = new RRT(no,raised,assigned,priority,project);
-//        }
-//        String parm = sc.nextLine();
-//
-//        RRT res = getHighestPriorityTicket(rr,parm);
-//        if (res==null){
-//            System.out.println("No such Ticket");
-//        }else {
-//            System.out.println(res.getTicketNo()+"\n"+res.getRaisedBy()+"\n"+res.getAssignedTo());
-//        }
+        int res = totalPriceOfTatkalBookings(tb,fromStation,toStation);
+        if (res==0){
+            System.out.println("No such trains");
+        }else {
+            System.out.println(res);
+        }
     }
 
-    public static RRT getHighestPriorityTicket(RRT[] rr,String par){
-        Arrays.sort(rr,new Sort());
-        for(RRT r : rr){
-            if (r.getProject().equalsIgnoreCase(par))
-                return r;
+    public static int totalPriceOfTatkalBookings(TatkalBooking[] tb,String fromStation,
+                                                                   String tostation){
+        int sum=0;
+        for(TatkalBooking t: tb){
+            if (t.getFromStation().equalsIgnoreCase(fromStation) &&
+                    t.getToStation().equalsIgnoreCase(tostation)){
+                sum+=t.getPrice();
+            }
         }
-        return null;
+        return sum;
     }
+
+
 }
+
+class TatkalBooking {
+    private int bookingId;
+    private String trainName;
+    private String fromStation;
+    private String toStation;
+    private int price;
+    private int noOfTicketAvailable;
+
+    public TatkalBooking(int bookingId, String trainName, String fromStation,
+                         String toStation, int price, int noOfTicketAvailable) {
+        this.bookingId = bookingId;
+        this.trainName = trainName;
+        this.fromStation = fromStation;
+        this.toStation = toStation;
+        this.price = price;
+        this.noOfTicketAvailable = noOfTicketAvailable;
+    }
+
+    public int getBookingId() {
+        return bookingId;
+    }
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
+    public String getFromStation() {
+        return fromStation;
+    }
+    public String getToStation() {
+        return toStation;
+    }
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+}
+
+
 
 class RRT{
     private int ticketNo;
@@ -90,7 +132,14 @@ class Sort implements Comparator<RRT> {
         return o1.getPriority()-o2.getPriority();
     }
 }
-
+//    public static RRT getHighestPriorityTicket(RRT[] rr,String par){
+//        Arrays.sort(rr,new Sort());
+//        for(RRT r : rr){
+//            if (r.getProject().equalsIgnoreCase(par))
+//                return r;
+//        }
+//        return null;
+//    }
 
 
 
