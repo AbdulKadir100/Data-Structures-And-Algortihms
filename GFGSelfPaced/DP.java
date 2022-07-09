@@ -75,15 +75,54 @@ public class DP {
         }
 
     }
+    private static int LIS4(int[] arr,int n){
+        int[] next = new int[n+1],curr = new  int[n+1];
 
-    private static int LIS2(int ind, int prev, int[] arr, int n, int[][] dp) {
+        for(int ind=n-1;ind>=0;ind--){
+            for(int prev_ind=ind-1;prev_ind>=-1;prev_ind--){
+                int len = next[prev_ind+1];//Not Take
+
+                //Checking the previous element in the array
+                if (prev_ind == -1 || arr[ind] > arr[prev_ind])
+                    len = Math.max(len, 1 + next[ind]+1);//Take
+                curr[prev_ind + 1] = len;
+            }
+            curr = next;
+        }
+        return next[-1+1];
+
+    }
+    private static int LIS3(int[] arr,int n){
+        int[][] dp = new int[n+1][n+1];
+
+        for(int ind=n-1;ind>=0;ind--){
+            for(int prev_ind=ind-1;prev_ind>=-1;prev_ind--){
+                int len = dp[ind + 1][prev_ind+1];//Not Take
+
+                //Checking the previous element in the array
+                if (prev_ind == -1 || arr[ind] > arr[prev_ind])
+                    len = Math.max(len, 1 + dp[ind + 1][ind]+1);//Take
+                dp[ind][prev_ind + 1] = len;
+            }
+        }
+        return dp[0][-1+1];
+
+    }
+    private static int LIS2(int ind, int prev_ind, int[] arr, int n, int[][] dp) {
+        /*
+        So inorder to store -1,we have to perform cordinate change in the array.
+        that's why dp[ind][prev+1]
+         */
         if (ind == n) return 0;
-        if (dp[ind][prev + 1] != -1) return dp[ind][prev + 1];
+        if (dp[ind][prev_ind + 1] != -1) return dp[ind][prev_ind + 1];
 
-        int len = LIS2(ind + 1, prev, arr, n, dp);//Not Take
-        if (prev == -1 || arr[ind] > arr[prev])
+        int len = LIS2(ind + 1, prev_ind, arr, n, dp);//Not Take
+
+        //Checking the previous element in the array
+        if (prev_ind == -1 || arr[ind] > arr[prev_ind])
             len = Math.max(len, 1 + LIS2(ind + 1, ind, arr, n, dp));//Take
-        return dp[ind][prev + 1] = len;
+
+        return dp[ind][prev_ind + 1] = len;
     }
 
     private static int LIS(int ind, int prev, int[] arr, int n) {
@@ -394,6 +433,7 @@ public class DP {
         TC -> O(NxM)
         SC -> O(NxM)
          */
+
         int n = s.length();
         int m = t.length();
         int[][] dp = new int[n + 1][m + 1];
@@ -448,7 +488,7 @@ public class DP {
          */
         if (j < 0) return 1;
         if (i < 0) return 0;
-        if (s.charAt(i) == t.charAt(j)) {
+        if (s.charAt(i-1) == t.charAt(j-1)) {
             return LCSDistinict(i - 1, j - 1, s, t) + LCSDistinict(i - 1, j, s, t);
         }
         return LCSDistinict(i - 1, j, s, t);
@@ -524,6 +564,9 @@ public class DP {
     }
 
     private static int LCPalindromicSubstring(String s) {
+        /*
+        Hint: res = LCS(String s,reverse(String t));
+         */
         StringBuilder t = new StringBuilder(s);
         t.reverse();
 
@@ -534,7 +577,7 @@ public class DP {
         /*
         Ex:- s = "abcd", t = "abed"
         ans = "ab"
-        Hint: res = LCS(String s,reverse(String t));
+
         Tabulation
         TC -> O(n * m)
         SC -> O(M*N)
@@ -657,8 +700,6 @@ public class DP {
                     dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
-
-
         return dp[n][m];
     }
 
@@ -673,7 +714,6 @@ public class DP {
         if (s.charAt(i - 1) == t.charAt(j - 1))
             return 1 + LCS2(i - 1, j - 1, s, t, dp);
         return dp[i][j] = Math.max(LCS2(i - 1, j, s, t, dp), LCS2(i, j - 1, s, t, dp));
-
     }
 
     private static int LCS(int i, int j, String s, String t) {
@@ -681,7 +721,6 @@ public class DP {
         if (s.charAt(i - 1) == t.charAt(j - 1))
             return 1 + LCS(i - 1, j - 1, s, t);
         return Math.max(LCS(i - 1, j, s, t), LCS(i, j - 1, s, t));
-
     }
 
     private static int minCuts4(int n, int N, int[] price) {
@@ -741,7 +780,7 @@ public class DP {
         Memoization
         TC -> O(N*ind)
         SC -> O(N*ind)+stack
-         */
+        */
         if (ind == 0) {
             return N * price[0];
         }
@@ -1014,6 +1053,7 @@ public class DP {
         }
         if (dp[ind][w] != -1)
             return dp[ind][w];
+
         int notTake = knapSack01_2(ind - 1, w, wt, val, dp);
         int take = Integer.MIN_VALUE;
         if (wt[ind] <= w) {
@@ -1023,12 +1063,18 @@ public class DP {
     }
 
     private int knapSack01(int ind, int w, int[] wt, int[] val) {
-        //Base case
+        /*
+        w - is the capacity of the knapsack/Bag.
+        wt - is the weight array of item's weight
+        val - is the correspond values of an item
+         */
 
+        //Base case
         if (ind == 0) {
             if (wt[0] <= w) return val[0];
             else return 0;
         }
+
         int notTake = knapSack01(ind - 1, w, wt, val);
         int take = Integer.MIN_VALUE;
         if (wt[ind] <= w) {
@@ -1196,6 +1242,14 @@ public class DP {
     }
 
     private boolean subsetSumEqualToTarget(int ind, int target, int[] arr) {
+        /*
+        You are given an array/list ‘ARR’ of ‘N’ positive integers and an integer ‘K’.
+        Your task is to check if there exists a subset in ‘ARR’ with a sum equal to ‘K’.
+        Note: Return true if there exists a subset with sum equal to ‘K’. Otherwise, return false.
+        For Example :
+        If ‘ARR’ is {1,2,3,4} and ‘K’ = 4, then there exists 2 subsets with sum = 4.
+        These are {1,3} and {4}. Hence, return true.
+         */
 
         if (target == 0) return true;
         if (ind == 0) return target == arr[0];
@@ -1274,9 +1328,9 @@ public class DP {
         SC -> O(N)
          */
         int m = arr[0].length;
-        if (j < 0 || j >= m)
+        if (j < 0 || j >= m)  //out side the boundary
             return Integer.MIN_VALUE;
-        if (i == 0)
+        if (i == 0)           // if its only single value
             return arr[0][j];
         int s = arr[i][j] + fallingPathSum(i - 1, j, arr);
         int d = arr[i][j] + fallingPathSum(i - 1, j - 1, arr);
@@ -1310,6 +1364,12 @@ public class DP {
     }
 
     private int trianglePathSum(int i, int j, int[][] arr) {
+        /*
+        Given a triangle array, return the minimum path sum from top to bottom.
+        For each step, you may move to an adjacent number of the row below.
+        More formally, if you are on index i on the current row, you may move to
+        either index i or index i + 1 on the next row.
+         */
         int n = arr.length;
         if (i == n - 1)
             return arr[n - 1][j];
