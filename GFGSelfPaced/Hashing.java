@@ -3,6 +3,7 @@ package GFGSelfPaced;
 import java.util.*;
 import java.lang.*;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 //class MyHash {
 //    int bucket;
@@ -42,6 +43,15 @@ public class Hashing {
 
 
 
+    }
+    public List<String> topKFrequent(String[] words, int k) {
+        TreeMap<String, Integer> map = new TreeMap<>(String::compareTo);
+        Arrays.stream(words).forEach(x -> map.put(x, map.getOrDefault(x, 0) + 1));
+        return map.entrySet().stream()
+                .sorted((o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()))
+                .map(Map.Entry::getKey)
+                .limit(k)
+                .collect(Collectors.toList());
     }
 
     public List<List<Integer>> fourSum(int[] nums, int target) {

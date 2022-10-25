@@ -26,25 +26,39 @@ class Solution {
     static Scanner sc = new Scanner(System.in);
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] arr = new int[n];
-        for (int i : arr) {
-            arr[i] = sc.nextInt();
-        }
+    StringBuilder sb1 = new StringBuilder();
 
-        int q = sc.nextInt();
-        int[][] qarr = new int[q][3];
-        for (int i=0;i< qarr.length;i++){
-            for (int j=0;j<qarr[0].length;j++){
-                qarr[i][j] = sc.nextInt();
+    public List<String> wordSubsets(String[] words1, String[] words2) {
+        List<String> res = new ArrayList<>();
+        int m = words1.length,n = words2.length;
+        String s1= words2[0],s2=words2[1];
+        for(int i=0;i<m;i++){
+            if(words1[i].contains(s1) && words1[i].contains(s2)){
+                res.add(words1[i]);
             }
         }
-
-
+        System.out.println(res);
+        return res;
     }
 
+    public static void main(String[] args) throws IOException {
+        String[] eq = new String[]{"a==b","b!=a"};
+        equationsPossible(eq);
+    }
+    public static boolean equationsPossible(String[] equations) {
+        int[] count = new int[0];
+
+        for(int i=0;i<equations.length;i++){
+            String ch = equations[i];
+            for (int j=0;j<ch.length();j++){
+                count = Arrays.copyOf(count,count.length+1);
+                count[ch.charAt(i)]++;
+            }
+
+        }
+        System.out.println(Arrays.toString(count));
+        return false;
+    }
     public static void rotateByk(int[] arr, int k) {
         int n = arr.length, idx = 1;
         if (k < 0 || k > n) return;

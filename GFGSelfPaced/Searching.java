@@ -228,7 +228,7 @@ public class Searching {
 //        low -=1;
 //        if (low>=oldlow && low <= olhigh)return low;
 //        else
-           return -1;
+           return high+1;
     }
     public static int itrativeBinarySearch(int[] arr, int x) {
         int low = 0, high = arr.length - 1;

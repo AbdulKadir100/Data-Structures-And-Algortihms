@@ -68,50 +68,188 @@ public class DP {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] arr = new int[n];
+        int[] arr = new int[]{4,8,10,240};
+        System.out.println(LDS(arr,arr.length));
+    }
+    public static boolean checkPossible(String s1,String s2){
+        //s1 always has to be greater than s2
+        if(s1.length() != s2.length()+1) return false;
+        int first=0,second=0;
+        while(first < s1.length()){
+            if(s1.charAt(first) == s2.charAt(second) && second < s2.length()){
+                first++;
+                second++;
+            }else{
+                first++;
+            }
+        }
+        return first == s1.length() && second == s2.length();
+    }
+    public static int longestStrChain(int n, String[] arr) {
+        Arrays.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        int[] dp = new int[n];
+        Arrays.fill(dp,1);
+        int maxi = 1;
+
+
         for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+            for (int prev = 0; prev < i; prev++) {
+                if ( checkPossible(arr[i],arr[prev]) && 1 + dp[i] > dp[i]) {
+                    dp[i] = 1 + dp[prev];
+                }
+            }
+            if (dp[i] > maxi){
+                maxi = dp[i];
+            }
+        }
+        return maxi;
+    }
+    private static ArrayList<Integer> LDS(int[] arr,int n){
+        int[] dp = new int[n], hash = new int[n];
+        Arrays.fill(dp,1);
+        int maxi = 1;
+        int lasIndex = 0;
+        Arrays.sort(arr);
+
+
+        for (int i = 0; i < n; i++) {
+            hash[i] = i;
+            for (int prev = 0; prev < i; prev++) {
+                if (arr[i] % arr[prev] == 0 && 1 + dp[i] > dp[i]) {
+                    dp[i] = 1 + dp[prev];
+                    hash[i] = prev;
+                }
+            }
+            if (dp[i] > maxi){
+                maxi = dp[i];
+                lasIndex = i;
+            }
+        }
+        //We have to print the lis and length as well
+
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(arr[lasIndex]);
+
+        while (hash[lasIndex] != lasIndex){
+            lasIndex = hash[lasIndex];
+            temp.add(arr[lasIndex]);
         }
 
-    }
-    private static int LIS4(int[] arr,int n){
-        int[] next = new int[n+1],curr = new  int[n+1];
+        Collections.sort(temp);
+        return temp;
 
-        for(int ind=n-1;ind>=0;ind--){
-            for(int prev_ind=ind-1;prev_ind>=-1;prev_ind--){
-                int len = next[prev_ind+1];//Not Take
+    }
+    private static int LISBinarySearch(int[] arr,int n){
+        /*
+        We have to replicate the array
+        TC -> O(Nxlogn)
+        SC -> O(N)
+         */
+        ArrayList<Integer> ans = new ArrayList<>();
+        ans.add(arr[0]);
+        int len=1;
+        for(int i=1;i<n;i++){
+            if (arr[i]>ans.get(ans.size()-1)){
+                ans.add(arr[i]);
+                len++;
+            }else {
+                int ind = BinarySearch(ans,arr[i]);
+                ans.set(ind,arr[i]);
+            }
+        }
+        return len;
+    }
+    private static int BinarySearch(ArrayList<Integer> arr,int key) {
+        int low=0,high=arr.size()-1;
+        while (low <= high) {
+            int mid = low + (high-low) / 2;
+            if (arr.get(mid) == key)
+                return mid;
+            else if (arr.get(mid) > key)
+                high = mid - 1;
+            else
+                low = mid + 1;
+        }
+        return high+1;
+    }
+    private static ArrayList<Integer> LIS5(int[] arr, int n) {
+        int[] dp = new int[n], hash = new int[n];
+        Arrays.fill(dp,1);
+        int maxi = 1;
+        int lasIndex = 0;
+
+
+        for (int i = 0; i < n; i++) {
+            hash[i] = i;
+            for (int prev = 0; prev < i; prev++) {
+                if (arr[prev] < arr[i] && 1 + dp[i] > dp[i]) {
+                    dp[i] = 1 + dp[prev];
+                    hash[i] = prev;
+
+                }
+            }
+            if (dp[i] > maxi){
+                maxi = dp[i];
+                lasIndex = i;
+            }
+        }
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(arr[lasIndex]);
+
+        while (hash[lasIndex] != lasIndex){
+            lasIndex = hash[lasIndex];
+            temp.add(arr[lasIndex]);
+        }
+
+        Collections.sort(temp);
+        return temp;
+    }
+
+    private static int LIS4(int[] arr, int n) {
+        int[] next = new int[n + 1], curr = new int[n + 1];
+
+        for (int ind = n - 1; ind >= 0; ind--) {
+            for (int prev_ind = ind - 1; prev_ind >= -1; prev_ind--) {
+                int len = next[prev_ind + 1];//Not Take
 
                 //Checking the previous element in the array
                 if (prev_ind == -1 || arr[ind] > arr[prev_ind])
-                    len = Math.max(len, 1 + next[ind]+1);//Take
+                    len = Math.max(len, 1 + next[ind + 1]);//Take
                 curr[prev_ind + 1] = len;
             }
             curr = next;
         }
-        return next[-1+1];
+        return next[-1 + 1];
 
     }
-    private static int LIS3(int[] arr,int n){
-        int[][] dp = new int[n+1][n+1];
 
-        for(int ind=n-1;ind>=0;ind--){
-            for(int prev_ind=ind-1;prev_ind>=-1;prev_ind--){
-                int len = dp[ind + 1][prev_ind+1];//Not Take
+    private static int LIS3(int[] arr, int n) {
+        int[][] dp = new int[n + 1][n + 1];
+
+        for (int ind = n - 1; ind >= 0; ind--) {
+            for (int prev_ind = ind - 1; prev_ind >= -1; prev_ind--) {
+                int len = dp[ind + 1][prev_ind + 1];//Not Take
 
                 //Checking the previous element in the array
                 if (prev_ind == -1 || arr[ind] > arr[prev_ind])
-                    len = Math.max(len, 1 + dp[ind + 1][ind]+1);//Take
+                    len = Math.max(len, 1 + dp[ind + 1][ind + 1]);//Take, ind+1 is to make avoid -1 indexing
                 dp[ind][prev_ind + 1] = len;
             }
         }
-        return dp[0][-1+1];
+        return dp[0][-1 + 1];
 
     }
+
     private static int LIS2(int ind, int prev_ind, int[] arr, int n, int[][] dp) {
         /*
         So inorder to store -1,we have to perform cordinate change in the array.
-        that's why dp[ind][prev+1]
+        that's why we add onto it.
+        dp[ind][prev+1]
          */
         if (ind == n) return 0;
         if (dp[ind][prev_ind + 1] != -1) return dp[ind][prev_ind + 1];
@@ -189,7 +327,7 @@ public class DP {
          */
         if (ind >= n) return 0;
         if (dp[ind][buy] != -1) return dp[ind][buy];
-        int profit = 0;
+
         if (buy == 1) {
             //   Buying Stocks (-val)
             dp[ind][buy] = Math.max(-val[ind] + BuyAndSellStockCoolDown2(ind + 1, 0, val, n, dp),//Take
@@ -488,7 +626,7 @@ public class DP {
          */
         if (j < 0) return 1;
         if (i < 0) return 0;
-        if (s.charAt(i-1) == t.charAt(j-1)) {
+        if (s.charAt(i - 1) == t.charAt(j - 1)) {
             return LCSDistinict(i - 1, j - 1, s, t) + LCSDistinict(i - 1, j, s, t);
         }
         return LCSDistinict(i - 1, j, s, t);
@@ -772,6 +910,7 @@ public class DP {
                 dp[ind][cut] = Math.max(take, notTake);
             }
         }
+        //System.out.println(Arrays.deepToString(dp));
         return dp[n - 1][N];
     }
 

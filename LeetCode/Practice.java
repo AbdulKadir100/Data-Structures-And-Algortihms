@@ -98,6 +98,39 @@ public class Practice {
 
     }
 
+    public int[] findOriginalArray(int[] changed) {
+        //TC -> (nxlogn + n) which is 10^5
+
+        int n = changed.length;
+        int[] res = new int[0];
+        //base case
+        if(n==1) return new int[0];
+
+        Set<Integer> set = new HashSet<>();
+
+        // Time -> nxlog
+        for(int i:changed){
+            set.add(i);
+        }
+
+        // Time -> n
+        for(int i=0;i<n;i++){
+            if(set.contains(changed[i]*2)){
+                res = Arrays.copyOf(res,res.length+1);
+                res[res.length-1] = changed[i];
+                set.remove(changed[i]);
+
+            }else{
+                set.remove(changed[i]);
+            }
+        }
+        if(set.isEmpty() && res.length==0){
+            return new int[0];
+        }
+        return res;
+
+    }
+
     public int finalValueAfterOperations(String[] operations) {
           int n = operations.length,count=0;
         for (int i = 0; i < n; i++) {

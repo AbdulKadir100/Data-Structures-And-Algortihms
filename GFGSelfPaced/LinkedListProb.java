@@ -16,6 +16,11 @@ class LinkNode {
     public LinkNode() {
 
     }
+
+    public LinkNode(int i, LinkNode head) {
+        data = i;
+        next = head;
+    }
 }
 
 class DoubleList {
@@ -103,6 +108,155 @@ public class LinkedListProb {
     }
 
     //Singly LinkedList
+    private LinkNode reverseKGroup(LinkNode head, int k) {
+        if(head == null || head.next == null || k == 1) return head;
+        LinkNode counter = head ;
+        int count = 0 ;
+        while(counter != null){
+            count = count + 1;
+            counter = counter.next;
+        }
+
+        LinkNode cur = head , nxt = cur.next;
+        LinkNode dummy = new LinkNode(0,head);
+        LinkNode pre = dummy;
+        while(count >=  k){
+            for(int i=1 ; i<k ;i++){
+                cur.next = nxt.next;
+                nxt.next = pre.next;
+                pre.next = nxt;
+                nxt = cur.next;
+            }
+            count = count - k;
+            pre = cur;
+
+            cur = cur.next;
+            if(cur != null)
+            {
+                nxt = cur.next;
+            }
+        }
+
+        return dummy.next;
+    }
+    private LinkNode sumOfTwoList(LinkNode l1,LinkNode l2){
+        LinkNode dummy = new LinkNode();
+        LinkNode temp = dummy;
+        int carry=0;
+        while (l1!=null || l2!=null || carry==1){
+            int sum=0;
+            if (l1!=null){
+                sum+= l1.data;
+                l1 = l1.next;
+            }
+            if (l2!=null){
+                sum+=l2.data;
+                l2 = l2.next;
+            }
+            sum+=carry;
+            carry = sum/10;
+            LinkNode node = new LinkNode(sum%10);
+            temp.next = node;
+            temp = temp.next;
+        }
+        return dummy.next;
+    }
+    private void deleteNodeList(LinkNode node){
+        /*
+        Basically we not given access to head of list
+        TC -> O(1)
+        SC -> O(1)
+         */
+        node.data = node.next.data;
+        node.next = node.next.next;
+    }
+    private LinkNode mergeTwoSortedList(LinkNode l1,LinkNode l2){
+        /*
+        It works for two different length of list
+        TC -> O(N)
+        SC -> O(N)
+        */
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+
+        if (l1.data > l2.data) swap(l1,l2); //swap
+
+
+        LinkNode res = l1;
+        while (l1 != null && l2 != null){
+            LinkNode tmp = null;
+            while (l1 != null && l1.data <= l2.data){
+                 tmp = l1;
+                 l1 = l1.next;
+            }
+            tmp.next = l2;
+
+            //swap
+            swap(l1,l2);
+
+        }
+        return res;
+    }
+    private LinkNode midOfList(LinkNode head){
+        /*
+        Two Pointer or Tortus approach
+        TC -> O(N/2)
+        SC -> O(1)
+
+        2nd Approach is to count all node and take mid add onto it.
+        n = total nodes
+        mid = (n/2)
+        return mid+1;
+        TC -> O(N) + O(N/2)
+        SC -> O(1)
+         */
+        if(head.next == null) return head;
+
+        LinkNode slow = head,fast = head;
+        while (fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+
+    }
+    private LinkNode deleteNodePointerGiven(LinkNode head,int n){
+        LinkNode curr = new LinkNode();
+        curr.next = head;
+        LinkNode slow = curr,fast = curr;
+        for (int i = 1; i <= n ; ++i) {
+            fast = fast.next;
+        }
+        //Edge Case
+        if (fast == head)
+            return head;
+
+        //this loop is for slow pointer to reach exact node
+        while (fast.next != null){
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return head;
+
+    }
+    private LinkNode reverseListEff(LinkNode head) {
+        // Reversing start to end whole list
+
+        LinkNode newHead = null;
+        while (head != null) {
+            LinkNode next = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = next;
+        }
+        return newHead;
+    }
+    private void swap(LinkNode l1,LinkNode l2){
+        LinkNode temp = l1;
+        l1 = l2;
+        l2 = temp;
+    }
     public int intersectionPointOfTwoList(LinkNode l1,LinkNode l2){
         int c1=0,c2=0;
         LinkNode curr1=l1,curr2=l2;
@@ -136,7 +290,6 @@ public class LinkedListProb {
             }else{
                 cur = cur.next;
             }
-
         }
         return head;
     }
@@ -169,6 +322,7 @@ public class LinkedListProb {
     }
 
     LinkNode getMid(LinkNode head) {
+        //We could use two pointer approach
         LinkNode midPrev = null;
         while (head != null && head.next != null) {
             midPrev = (midPrev == null) ? head : midPrev.next;
@@ -207,7 +361,7 @@ public class LinkedListProb {
             return head;
         LinkNode cur = head;
         while (cur!=null && cur.next!=null){
-            swap(cur.data,cur.next.data);
+          //  swap(cur.data,cur.next.data);
             cur = cur.next.next;
         }
         return head;
@@ -248,10 +402,6 @@ public class LinkedListProb {
         eE.next = oS;
         oE.next = null;
         return es;
-    }
-    void deleteNodePointerGiven(LinkNode ref){
-        ref.data = ref.next.data;
-        ref.next = ref.next.next;
     }
     void detectAndRemovLoop(LinkNode head){
         LinkNode slow=head,fast=head;
@@ -325,18 +475,7 @@ public class LinkedListProb {
             head.next = reverseListEffUptoK(head,k);
         return prev;
     }
-    LinkNode reverseListEff(LinkNode head) {
-    // Reversing start to end whole list
-        LinkNode curr = head;
-        LinkNode prev = null;
-        while (curr != null) {
-            LinkNode next = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = next;
-        }
-        return prev;
-    }
+
 
     public LinkNode reverseList(LinkNode head) {
         /*

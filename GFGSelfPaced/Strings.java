@@ -23,6 +23,17 @@ public static String StringChellenge(String str){
         fn("bubble");
         
     }
+    public static String reverseWords(String s){
+        String[] sarr = s.split(" ");
+        StringBuilder res = new StringBuilder();
+
+        for(int i=0;i< sarr.length;i++){
+            
+            res.insert(0,sarr[i]);
+            res.insert(0," ");
+        }
+        return res.toString().trim();
+    }
     public static void fn(String input){
         Map<Character,Integer> map = new HashMap<>();
         for(Character c : input.toCharArray()){
@@ -67,9 +78,7 @@ public static String StringChellenge(String str){
         int NO_OF_CHARS=256;
 
         int[] count1 = new int [NO_OF_CHARS];
-        Arrays.fill(count1, 0);
         int[] count2 = new int [NO_OF_CHARS];
-        Arrays.fill(count2, 0);
         int i;
         for (i = 0; i <str1.length && i < str2.length ;
              i++)
@@ -122,8 +131,8 @@ public static String StringChellenge(String str){
         int[] ct = new int[CHAR];
         int[] cp = new int[CHAR];
         for (int i = 0; i < m; i++) {
-            ct[txt.charAt(i)]++;
-            cp[pat.charAt(i)]++;
+            ct[txt.charAt(i)-'a']++;
+            cp[pat.charAt(i)-'a']++;
         }
         for (int i = m; i < n; i++) {
             if (ct[txt.charAt(i)] == 1)
@@ -164,7 +173,7 @@ public static String StringChellenge(String str){
         return many.toString();
     }
 
-    public static void patternMatch(String txt, String patt) {
+    public static void spatternMatch(String txt, String patt) {
         int m = patt.length();
         int n = txt.length();
         for (int i = 0; i <= n - m; i++) {

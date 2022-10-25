@@ -18,11 +18,124 @@ class Pair{
          3    6 14   20
 */
 
+class BSTIterator {
+    Stack<Node> stack = new Stack<>();
+
+    public BSTIterator(Node root) {
+        pushAll(root);
+    }
+
+    public int next() {
+        Node tem = stack.pop();
+        pushAll(tem.right);
+        return tem.key;
+    }
+
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+    public void pushAll(Node node){
+        for(;node!=null;stack.push(node),node=node.left);
+    }
+}
 public class BST {
     public static void main(String[] args) {
 
     }
+    private Node bstFromPreorder(int[] A,int bound,int[] i) {
+        //base case ,if it is cross the length,and len of i should be 1.
+        if(i[0] == A.length || A[i[0]]>bound)return null;
 
+        Node root = new Node(A[i[0]++]);
+        root.left = bstFromPreorder(A,root.key,i);
+        root.right = bstFromPreorder(A,bound,i);
+        return root;
+
+    }
+    private boolean isValidBST(Node root,long min,long max){
+        if (root==null)return true;
+        if (root.key >= max || root.key <= min)return false;
+        return isValidBST(root.left, min, max) && isValidBST(root.right, min, max);
+
+    }
+    private Node deleteNode(Node root,int key){
+        if (root==null)return null;
+        if (root.key==key){
+            return helper(root);
+        }
+        Node dummy= root;
+        while (root!=null){
+            if (root.key>key){
+                if (root.left != null && root.left.key==key){
+                    root.left = helper(root.left);
+                    break;
+                }else {
+                    root = root.left;
+                }
+            }else {
+                if (root.right != null && root.right.key==key){
+                    root.right = helper(root.right);
+                    break;
+                }else {
+                    root = root.right;
+                }
+            }
+        }
+        return dummy;
+
+    }
+    private Node helper(Node root){
+        if (root.left == null){
+            return root.right;
+        }else if (root.right==null){
+            return root.left;
+        }
+        Node rightchild = root.right;
+        Node lastRight = findLastRight(root.left);
+        lastRight.right = rightchild;
+        return root.left;
+
+
+
+    }
+    private Node findLastRight(Node node){
+        if (node.right==null)return node;
+        return findLastRight(node.right);
+    }
+    private Node insertIntoBST(Node root, int val) {
+        if(root==null) return new Node(val);
+        if(root.key > val) root.left =  insertIntoBST(root.left,val);
+        else  root.right = insertIntoBST(root.right,val);
+        return root;
+    }
+    private int findfloor(Node root,int key){
+        int floor=-1;
+        if (root.key == key){
+            floor = root.key;
+            return floor;
+        }
+        if (key > root.key){
+            floor = root.key;
+            root = root.right;
+        } else {
+            root = root.left;
+        }
+        return floor;
+    }
+    private int findCeil(Node root,int key){
+        int ciel=-1;
+        if (root.key == key){
+            ciel = root.key;
+            return ciel;
+        }
+        if (key > root.key){
+            root = root.right;
+        } else {
+            ciel = root.key;
+            root = root.left;
+        }
+        return ciel;
+    }
     void veticalOrder(Node root){
         Queue<Pair> q = new LinkedList<>();
         Map<Integer,ArrayList<Integer>> map = new TreeMap<>();

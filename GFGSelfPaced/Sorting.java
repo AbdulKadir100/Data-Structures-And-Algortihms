@@ -231,6 +231,7 @@ public class Sorting {
 
     public static int lomutoPartition(int[] arr, int l, int h) {
         /*
+        TC -> O(N)
         Picking last element as a pivot and sent it to its correspond place
          */
         int pivot = arr[h];
@@ -248,11 +249,13 @@ public class Sorting {
     static void partition(int[] arr, int l, int h, int p) {
         int[] temp = new int[h - l + 1];
         int index = 0;
+        // Less than pivot left side of an array
         for (int i = l; i <= h; i++) {
             if (arr[i] <= arr[p]) {
                 temp[index++] = arr[i];
             }
         }
+        // Greater than pivot right side of an array
         for (int i = l; i <= h; i++) {
             if (arr[i] > arr[p]) {
                 temp[index++] = arr[i];
@@ -287,25 +290,21 @@ public class Sorting {
 
         while (i < n1 && j < n2) {
             if (left[i] <= right[j]) {
-                arr[k] = left[i];
-                i++;
+                arr[k] = left[i++];
+                //i++;
             } else {
-                arr[k] = right[j];
-                j++;
+                arr[k] = right[j++];
+                //j++;
                 res = res + (n1 - i);
             }
             k++;
         }
 
         while (i < n1) {
-            arr[k] = left[i];
-            i++;
-            k++;
+            arr[k++] = left[i++];
         }
         while (j < n2) {
-            arr[k] = right[j];
-            j++;
-            k++;
+            arr[k++] = right[j++];
         }
         return res;
     }
@@ -331,12 +330,12 @@ public class Sorting {
                 j++;
             }
             while (i < m && a[i] != a[i - 1]) {
-                System.out.print(a[i] + " ");
-                i++;
+                System.out.print(a[i++] + " ");
+                //i++;
             }
             while (j < m && b[j] != b[j - 1]) {
-                System.out.print(b[j] + " ");
-                j++;
+                System.out.print(b[j++] + " ");
+                //j++;
             }
         }
     }
@@ -356,24 +355,20 @@ public class Sorting {
         int i = low, j = mid+1, k = 0;
         while (i <= mid && j <= high) {
             if (arr[i] <= arr[j]) {
-                temp[k] = arr[i];
-                i+=1;
-                k+=1;
+                temp[k++] = arr[i++];
+                //i+=1;
             } else {
-                temp[k] = arr[j];
-                j+=1;
-                k+=1;
+                temp[k++] = arr[j++];
+                //j+=1;
             }
         }
         while (i <= mid) {
-            arr[k] = arr[i];
-            i+=1;
-            k+=1;
+            temp[k++] = arr[i++];
+            //i+=1;
         }
         while (j <= high) {
-            arr[k] = arr[j];
-            j+=1;
-            k+=1;
+            temp[k++] = arr[j++];
+            //j+=1;
         }
         for (int l = 0; l < temp.length; l++) {
             arr[l] = temp[l];
@@ -393,6 +388,8 @@ public class Sorting {
                 j+=1;
             }
         }
+        //Get all the remaining from the both the array
+
         while (i < n) {
             System.out.print(a[i] + " ");
             i+=1;
@@ -406,7 +403,7 @@ public class Sorting {
 
     public static void intersectionTwoArrayEff(int[] nums1, int[] nums2) {
         int m = nums1.length, n = nums2.length;
-        int[] a = new int[m];
+       // int[] a = new int[m];
         int i = 0, j = 0;
         //It will work for if both array has same length.
         while (i < m && j < n) {
@@ -419,7 +416,7 @@ public class Sorting {
             } else if (nums1[i] > nums2[j]) {
                 j++;
             } else {
-                System.out.print(nums1[i] + " ");
+                System.out.print(nums1[i] + " "); //or print(nums2[j])
                 i++;
                 j++;
             }
@@ -452,7 +449,6 @@ public class Sorting {
                     min_ind = j;
                 }
                 swap(nums[i],nums[min_ind]);
-
             }
         }
         System.out.println(Arrays.toString(nums));
@@ -493,18 +489,19 @@ public class Sorting {
 
 
     public static int[] topKFrequent(int[] nums, int k) {
+        // Based on partition of the array
          int[] res = new int[k];
          int l=0,r= nums.length-1,i=0;
         while (l <= r) {
-            int p = lomutoPartition(nums, l, r);
-            if (p == k) {
+            int pivot = lomutoPartition(nums, l, r);
+            if (pivot == k) {
                 if (nums[r]!=nums[r+1]) {
-                    res[i] = nums[p];
+                    res[i] = nums[pivot];
                 }
-            }else if (p > k) {
-                r = p - 1;
+            }else if (pivot > k) {
+                r = pivot - 1;
             }else {
-                l = p + 1;
+                l = pivot + 1;
             }
             i++;
         }
